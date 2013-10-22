@@ -1,0 +1,9 @@
+development:
+  access_key_id: 'AKIAJN2HHO3S5WORO7LA'
+  secret_access_key: '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'
+  bucket: 'development002'
+  
+production:
+  access_key_id: 'AKIAJN2HHO3S5WORO7LA'
+  secret_access_key: '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'
+  bucket: 'development002'  

@@ -23,7 +23,7 @@
         <td><%= capture.start_time %></td>
         <td><%= capture.end_time %></td>
         <td><%= capture.camera.name %></td>
-        <td><%= link_to "video", capture.video.url if capture.completed? %></td>
+        <td><%= link_to "video", capture.video.expiring_url if capture.completed? %></td>
         <td><%= capture.state %></td>
         <td>
           <%= link_to t('.edit', :default => t("helpers.links.edit")),

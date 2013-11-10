@@ -1,11 +1,12 @@
 class Capture < ActiveRecord::Base
   belongs_to :camera
   
-  has_attached_file :video,
-    :path           => "videos/:id/:basename.:extension",
-    :storage        => :s3,
-    :s3_permissions => :private,
-    :s3_credentials => "#{Rails.root}/config/s3.yml"
+  has_attached_file :video
+    #,
+    #:path           => "videos/:id/:basename.:extension",
+    #:storage        => :s3,
+    #:s3_permissions => :private,
+    #:s3_credentials => "#{Rails.root}/config/s3.yml"
   
   validates :start_time, :presence => true
   validates :end_time, :presence => true
@@ -29,16 +30,16 @@ class Capture < ActiveRecord::Base
     event :complete do
       transition all =>  [:completed]
     end
-    
-    #after_transition :on => :enqueue, :do => :post_record_job
-    #after_transition :on => :upload, :do => :save_attachment
-    #after_transition :on => :start, :do => :start_recording
-    #after_transition :on => :complete, :do => :remove_output_file
   end 
+  
+  validate :verify_times_on_create, :on => :create
+  validate :verify_job_not_started, :on => :update
+  validate :verify_times_on_update, :on => :update
   
   after_create do
     self.post_record_job
   end
+  after_update :register_new_job
    
   def duration
     seconds = self.end_time - self.start_time 
@@ -69,8 +70,52 @@ class Capture < ActiveRecord::Base
     File.delete(self.output_file_path) if File.exist?(self.output_file_path)
   end
   
+  def register_new_job
+    if self.start_time_changed? or self.end_time_changed?
+      unless job_started
+        w = Sidekiq::SortedSet.new('schedule').find_job(self.job_id)
+        w.delete if w
+        post_record_job
+      end
+    end
+  end
+  
   def post_record_job
-    Delayed::Job.enqueue(CaptureJob.new(self.id), { :run_at => self.start_time })
+    jid = CaptureWorker.perform_at(self.start_time, self.id, 1)
+    Capture.where(id: self.id).update_all({ job_id: jid })
+  end
+  
+  def job_started
+    w = Sidekiq::SortedSet.new('schedule').find_job(self.job_id)
+    return w.nil?
+  end
+  
+  def verify_job_not_started
+    if job_started and (self.start_time_changed? or self.end_time_changed?)
+      self.errors.add(:base, "Capture process already started")
+    end
+  end
+  
+  def verify_times_on_create
+    if self.start_time < Time.now
+      self.errors.add(:start_time, "Capture must be started in the future")
+    end
+    
+    if self.end_time < Time.now
+      self.errors.add(:end_time, "Capture must be ended in the future")
+    end
+    
+  end
+  
+  def verify_times_on_update
+    
+    if self.start_time >= self.end_time
+      self.errors.add(:end_time, "Start time must be less than end time")
+    end
+    
+    if self.end_time <= self.start_time
+      self.errors.add(:end_time, "Start time must be greather than end time")
+    end
   end
   
   def process_recording

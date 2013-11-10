@@ -39,7 +39,7 @@ group :development do
 end
 
 # Use Capistrano for deployment
-# gem 'capistrano', group: :development
+gem 'capistrano', group: :development
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
@@ -53,5 +53,12 @@ gem 'paperclip'
 gem 'browser-timezone-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
+gem "delayed_job_web"
+
+gem 'sidetiq'
+gem "sidekiq"
+gem 'sinatra', '>= 1.3.0', :require => nil
+gem 'foreman', :require => false
+gem 'unicorn'
 
 

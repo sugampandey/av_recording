@@ -1,6 +1,6 @@
 class CapturesController < ApplicationController
   before_action :set_capture, only: [:show, :edit, :update, :destroy]
-  before_action :sorry_cannot_edit, only: [:edit, :update]
+  #before_action :sorry_cannot_edit, only: [:edit, :update]
   around_action :set_time_zone
 
 

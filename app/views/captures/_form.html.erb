@@ -1,4 +1,17 @@
 <%= form_for @capture, :html => { :class => 'form-horizontal' } do |f| %>
+
+  <% if @capture.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@capture.errors.count, "error") %> prohibited this capture from being saved:</h2>
+
+      <ul>
+      <% @capture.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <div class="control-group">
     <%= f.label :camera_id, :class => 'control-label' %>
     <div class="controls">

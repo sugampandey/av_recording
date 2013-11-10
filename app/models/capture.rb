@@ -1,12 +1,11 @@
 class Capture < ActiveRecord::Base
   belongs_to :camera
   
-  has_attached_file :video
-    #,
-    #:path           => "videos/:id/:basename.:extension",
-    #:storage        => :s3,
-    #:s3_permissions => :private,
-    #:s3_credentials => "#{Rails.root}/config/s3.yml"
+  has_attached_file :video,
+    :path           => "videos/:id/:basename.:extension",
+    :storage        => :s3,
+    :s3_permissions => :private,
+    :s3_credentials => "#{Rails.root}/config/s3.yml"
   
   validates :start_time, :presence => true
   validates :end_time, :presence => true
@@ -55,7 +54,11 @@ class Capture < ActiveRecord::Base
   
   def output_file_path
     f = self.start_time.to_s.parameterize
-    "#{Rails.root}/tmp/cache/#{self.id}-#{f}.avi"
+    if Rails.env.production?
+      "/mnt/#{self.id}-#{f}.avi"
+    else
+      "#{Rails.root}/tmp/cache/#{self.id}-#{f}.avi"
+    end
   end
 
   def save_attachment

@@ -8,4 +8,9 @@
   line-height: 1em;
   font-size: 0.9em;
 }
-
+.ui-widget{ 
+  font-size:0.75em; 
+}
+.ui-widget {
+  font-family: "proxima-nova", sans-serif;
+}

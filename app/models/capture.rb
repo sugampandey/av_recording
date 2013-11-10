@@ -70,7 +70,7 @@ class Capture < ActiveRecord::Base
   def output_file_path
     f = output_filename
     if Rails.env.production?
-      "/mnt/#{self.id}-#{f}.avi"
+      "/mnt/videos/#{self.id}-#{f}.avi"
     else
       "#{Rails.root}/tmp/cache/#{self.id}-#{f}.avi"
     end

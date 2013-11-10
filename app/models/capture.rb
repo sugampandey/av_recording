@@ -52,8 +52,23 @@ class Capture < ActiveRecord::Base
     end
   end
   
+  def output_filename
+    date_part = ['Video', 
+      self.start_time.strftime("%m%d%Y")
+    ].join('_')
+    
+    time_part = [ self.start_time.strftime("%H%M"),
+      self.end_time.strftime("%H%M"),
+      self.id
+    ].join('-')
+    
+    camera_part = self.camera.name.parameterize
+    
+    "#{date_part}_#{time_part}_#{camera_part}"
+  end
+  
   def output_file_path
-    f = self.start_time.to_s.parameterize
+    f = output_filename
     if Rails.env.production?
       "/mnt/#{self.id}-#{f}.avi"
     else

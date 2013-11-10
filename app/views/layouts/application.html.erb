@@ -1,41 +1,48 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
-  <![endif]-->
-
-  <title>Recorder</title>
-  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%= csrf_meta_tags %>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Audio video recording application.">
+  <title>AV Recorder</title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
 </head>
 <body>
-  <div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container">
-        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </a>
-        <a class="brand" href="#">Recorder</a>
-        <div class="nav-collapse">
-          <ul class="nav">
-            <li><%= link_to "Cameras", cameras_path %></li>
-            <li><%= link_to "Captures", captures_path %></li>
-          </ul>
-        </div>
+  <div class="pure-g-r" id="layout">
+    <a href="#menu" id="menuLink" class="pure-menu-link">
+      <span></span>
+    </a>
+
+    <div class="pure-u" id="menu">
+      <div class="pure-menu pure-menu-open">
+        <%= link_to "AV Recorder", root_path, :class => "pure-menu-heading" %>
+        <ul>
+          <li class=" ">
+            <%= link_to "Captures", captures_path %>
+          </li>
+          <li class=" ">
+            <%= link_to "Cameras", cameras_path %>
+          </li>
+          <li class=" ">
+            <%= link_to "Schedules", "javascript:alert('todo')" %>
+          </li>
+          <li class=" ">
+            <%= link_to "Sidekiq", sidekiq_web_path, :target => "_blank" %>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pure-u-1" id="main">
+      <div class="content">
+        <p><%= notice %></p>
+        <%= yield %>
       </div>
     </div>
   </div>
-
-  <div class="container">
-    <div class="row">
-      <%= flash[:notice] %>
-      <%= yield %>
-    </div>
-  </div>
+</div>
+<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 </body>
+
 </html>

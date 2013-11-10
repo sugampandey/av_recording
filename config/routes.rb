@@ -3,10 +3,7 @@ require 'sidetiq/web'
 
 Recorder::Application.routes.draw do
   resources :cameras
-  resources :captures
-
-  get "/delayed_job" => DelayedJobWeb, :anchor => false
-  
+  resources :captures  
   mount Sidekiq::Web => '/sidekiq'
   root 'captures#index'
 end

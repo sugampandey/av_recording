@@ -14,10 +14,6 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
 
-gem 'therubyracer'
-gem 'less-rails'
-gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
-
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
@@ -45,20 +41,14 @@ gem 'capistrano', group: :development
 # gem 'debugger', group: [:development, :test]
 
 gem 'daemons'
-gem 'delayed_job', git: 'git://github.com/collectiveidea/delayed_job.git'
-gem 'delayed_job_active_record', git: 'git://github.com/collectiveidea/delayed_job_active_record.git'
-gem 'state_machine', git: 'git@github.com:pluginaweek/state_machine.git'
+gem 'state_machine'
 gem 'aws-sdk'
 gem 'paperclip'
 gem 'browser-timezone-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem "delayed_job_web"
-
 gem 'sidetiq'
 gem "sidekiq"
 gem 'sinatra', '>= 1.3.0', :require => nil
 gem 'foreman', :require => false
 gem 'unicorn'
-
-

@@ -10,5 +10,8 @@
  *
  *= require_self
  *= require jquery.ui.all
- *= require_tree .
+ *= require purecss
+ *= require fonts
+ *= require theme
+ *= require custom
  */

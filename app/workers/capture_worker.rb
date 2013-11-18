@@ -5,8 +5,8 @@ class CaptureWorker
   def perform(id, count)
     c = Capture.find_by_id(id)
     if c
-      c.start!
-      c.start_recording
+      c.start! 
+      c.process_capture
     end
   end
 end

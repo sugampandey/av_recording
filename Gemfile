@@ -43,7 +43,6 @@ gem 'capistrano', group: :development
 gem 'daemons'
 gem 'state_machine'
 gem 'aws-sdk'
-gem 'paperclip'
 gem 'browser-timezone-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'

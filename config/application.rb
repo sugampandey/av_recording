@@ -27,3 +27,7 @@ module Recorder
     # config.i18n.default_locale = :de
   end
 end
+
+S3_ACCESS_KEY = "AKIAJN2HHO3S5WORO7LA"
+S3_SECRET_KEY = "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"
+S3_BUCKET_NAME = "AV_Recording"

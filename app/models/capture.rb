@@ -23,9 +23,6 @@ class Capture < ActiveRecord::Base
     event :complete do
       transition all =>  [:completed]
     end
-    
-    # after_transition :on => :start, :do => :process_capture
-    # after_transition :on => :upload, :do => :process_upload
   end 
   
   validate :verify_times_on_create, :on => :create
@@ -34,7 +31,21 @@ class Capture < ActiveRecord::Base
   
   after_create :register_capture_worker
   after_update :update_capture_worker
+
+  def self.s3
+    AWS::S3.new(:access_key_id => S3_ACCESS_KEY, :secret_access_key => S3_SECRET_KEY)
+  end 
    
+  def self.cleanup
+    t = Time.zone.now - 7.days
+    Capture.destroy_all("end_time < '#{t}'")
+    Capture.s3.buckets[S3_BUCKET_NAME].objects.each do |s3obj|
+      if s3obj.last_modified < t
+        s3obj.delete
+      end
+    end
+  end
+  
   def duration
     seconds = self.end_time - self.start_time 
     seconds.abs
@@ -76,7 +87,7 @@ class Capture < ActiveRecord::Base
   def update_capture_worker
     if self.start_time_changed? or self.end_time_changed?
       unless worker_started?
-        w = Sidekiq::SortedSet.new('schedule').find_job(self.worker_id)
+        w = Sidekiq::SortedSet.new('schedule').find_job(self.job_id)
         w.delete if w
         register_capture_worker
       end
@@ -89,30 +100,27 @@ class Capture < ActiveRecord::Base
   end
   
   def register_upload_worker
-    perform_at = self.end_time# + 5.minutes
+    perform_at = self.end_time + 5.minutes
     jid = UploadWorker.perform_at(perform_at, self.id, 1)
     Capture.where(id: self.id).update_all({ job_id: jid })
   end
   
-  # save pid and register new uploading job
-  def process_capture
+  def capture_command
     url = self.camera.stream_uri
-    result = system "sh #{Rails.root}/bin/capture.sh '#{url}' #{self.duration} #{self.output_file_path}"
-    self.pid = result
+    "avconv -i '#{url}' -t #{self.duration} -acodec libmp3lame #{self.output_file_path}"
+  end
+  
+  def process_capture
+    self.pid = spawn(self.capture_command, :out=>"/dev/null", :err => "#{Rails.root}/log/recording.log")
+
     if self.save! 
       register_upload_worker
     end
   end
   
   def process_upload
-    s3 = AWS::S3.new(
-      :access_key_id => 'AKIAJN2HHO3S5WORO7LA',
-      :secret_access_key => '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'
-    )
-    bucket_name = "AV_Recording"
-
     key = File.basename(self.output_file_path)
-    s3.buckets[bucket_name].objects[key].write(:file => self.output_file_path)
+    Capture.s3.buckets[S3_BUCKET_NAME].objects[key].write(:file => self.output_file_path)
     self.complete!
   end
   

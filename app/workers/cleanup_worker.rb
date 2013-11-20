@@ -1,4 +1,4 @@
-class DailyWorker
+class CleanupWorker
   include Sidekiq::Worker
   include Sidetiq::Schedulable
 
@@ -9,6 +9,6 @@ class DailyWorker
   end
 
   def perform
-    puts "Test"
+    Capture.cleanup
   end
 end

@@ -50,4 +50,4 @@ gem 'sidetiq'
 gem "sidekiq"
 gem 'sinatra', '>= 1.3.0', :require => nil
 gem 'foreman', :require => false
-gem 'unicorn'
+gem 'unicorn', :require => false

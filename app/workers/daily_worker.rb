@@ -9,6 +9,6 @@ class DailyWorker
   end
 
   def perform
-    puts "Test"
+    Schedule.register
   end
 end

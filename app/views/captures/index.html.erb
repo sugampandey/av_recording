@@ -10,7 +10,6 @@
       <th><%= model_class.human_attribute_name(:start_time) %></th>
       <th><%= model_class.human_attribute_name(:end_time) %></th>
       <th><%= model_class.human_attribute_name(:camera_name) %></th>
-      <th><%= model_class.human_attribute_name(:video) %></th>
       <th><%= model_class.human_attribute_name(:state) %></th>
       <th><%=t '.actions', :default => t("helpers.actions") %></th>
     </tr>
@@ -23,7 +22,6 @@
         <td><%= capture.start_time %></td>
         <td><%= capture.end_time %></td>
         <td><%= capture.camera.name %></td>
-        <td><%= link_to "video", capture.video.expiring_url, :target => "_blank" if capture.completed? %></td>
         <td><%= capture.state %></td>
         <td>
           <%= link_to t('.edit', :default => t("helpers.links.edit")),

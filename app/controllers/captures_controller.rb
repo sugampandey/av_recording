@@ -1,7 +1,7 @@
 class CapturesController < ApplicationController
-  before_action :set_capture, only: [:show, :edit, :update, :destroy]
+  before_action :set_capture, only: [:show, :edit, :update, :destroy, :download]
   #before_action :sorry_cannot_edit, only: [:edit, :update]
-  around_action :set_time_zone
+  around_action :set_time_zone, except: [:download]
 
 
   # GET /captures
@@ -63,6 +63,15 @@ class CapturesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to captures_url }
       format.json { head :no_content }
+    end
+  end
+  
+  def download
+    s3_url = @capture.expiring_url
+    if s3_url
+      redirect_to s3_url.to_s
+    else
+      redirect_to captures_url, notice: "Video doesn't exists or deleted."
     end
   end                                                                             
 

@@ -31,6 +31,7 @@ class Capture < ActiveRecord::Base
   
   after_create :register_capture_worker
   after_update :update_capture_worker
+  after_destroy :remove_capture_worker
 
   def self.s3
     AWS::S3.new(:access_key_id => S3_ACCESS_KEY, :secret_access_key => S3_SECRET_KEY)
@@ -94,6 +95,13 @@ class Capture < ActiveRecord::Base
     end
   end
   
+  def remove_capture_worker
+    unless worker_started?
+      w = Sidekiq::SortedSet.new('schedule').find_job(self.job_id)
+      w.delete if w
+    end
+  end
+  
   def register_capture_worker
     jid = CaptureWorker.perform_at(self.start_time, self.id, 1)
     Capture.where(id: self.id).update_all({ job_id: jid })
@@ -115,6 +123,24 @@ class Capture < ActiveRecord::Base
 
     if self.save! 
       register_upload_worker
+      register_recurrent_worker
+    end
+  end
+  
+  def register_recurrent_worker
+    return unless self.recurrent?
+    
+    begin
+      old_time_zone = Time.zone
+      Time.zone = self.time_zone
+      new_capture = Capture.new
+      new_capture.start_time = self.start_time + 1.week
+      new_capture.end_time = self.end_time + 1.week
+      new_capture.camera = self.camera
+      new_capture.time_zone = self.time_zone
+      new_capture.save!
+    ensure
+      Time.zone = old_time_zone
     end
   end
   

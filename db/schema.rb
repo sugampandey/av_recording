@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131118144925) do
+ActiveRecord::Schema.define(version: 20131122184929) do
 
   create_table "cameras", force: true do |t|
     t.string   "name"
@@ -29,14 +29,25 @@ ActiveRecord::Schema.define(version: 20131118144925) do
     t.datetime "end_time"
     t.string   "time_zone"
     t.string   "state"
-    t.string   "video_file_name"
-    t.string   "video_content_type"
-    t.integer  "video_file_size"
-    t.datetime "video_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "job_id"
     t.string   "pid"
+    t.boolean  "recurrent",  default: false
+  end
+
+  create_table "schedule_cameras", force: true do |t|
+    t.integer "schedule_id"
+    t.integer "camera_id"
+  end
+
+  create_table "schedules", force: true do |t|
+    t.integer  "wday"
+    t.time     "start_time"
+    t.time     "end_time"
+    t.boolean  "enabled",    default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

@@ -26,9 +26,12 @@
   </div>
   <div class="pure-control-group">
     <%= f.label :end_time, :class => 'control-label' %>
-      <%= f.text_field :end_time, :value => f.object.end_time.strftime('%Y-%m-%d %H:%M'), :class => 'text_field time_picker' %>
+    <%= f.text_field :end_time, :value => f.object.end_time.strftime('%Y-%m-%d %H:%M'), :class => 'text_field time_picker' %>
   </div>
-
+  <div class="pure-control-group">
+    <%= f.label :recurrent, :class => 'control-label' %>
+    <%= f.check_box :recurrent %>&nbsp;&nbsp;<span style="font-size: 0.7em"><i>by checking this, recording will recurrent in the next week</i></span>
+  </div>
   <div class="pure-controls">
     <%= f.submit nil, :class => 'btn btn-primary pure-button pure-button-primary' %>
     <%= link_to t('.cancel', :default => t("helpers.links.cancel")),

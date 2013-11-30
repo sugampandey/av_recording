@@ -74,7 +74,7 @@ class CapturesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def capture_params
-      params.require(:capture).permit(:camera_id, :start_time, :end_time, :time_zone)
+      params.require(:capture).permit(:camera_id, :start_time, :end_time, :time_zone, :recurrent)
     end
 
     def set_time_zone

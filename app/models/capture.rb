@@ -76,6 +76,15 @@ class Capture < ActiveRecord::Base
     end
   end
   
+  def expiring_url
+    key = File.basename(self.output_file_path)
+    if Capture.s3.buckets[S3_BUCKET_NAME].objects[key].exists?
+      Capture.s3.buckets[S3_BUCKET_NAME].objects[key].url_for(:get, :expires_in => 86400)
+    else
+      nil
+    end
+  end
+  
   def remove_output_file
     File.delete(self.output_file_path) if File.exist?(self.output_file_path)
   end

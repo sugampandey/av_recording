@@ -11,6 +11,7 @@
       <th><%= model_class.human_attribute_name(:end_time) %></th>
       <th><%= model_class.human_attribute_name(:camera_name) %></th>
       <th><%= model_class.human_attribute_name(:state) %></th>
+      <th><%= model_class.human_attribute_name(:video) %></th>
       <th><%=t '.actions', :default => t("helpers.actions") %></th>
     </tr>
   </thead>
@@ -23,6 +24,7 @@
         <td><%= capture.end_time %></td>
         <td><%= capture.camera.name %></td>
         <td><%= capture.state %></td>
+        <td><%= link_to "Download", download_capture_path(capture) if capture.completed? %></td>
         <td>
           <%= link_to t('.edit', :default => t("helpers.links.edit")),
                       edit_capture_path(capture), :class => 'btn btn-mini' %>

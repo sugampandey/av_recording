@@ -129,7 +129,7 @@ class Capture < ActiveRecord::Base
   end
   
   def register_upload_worker
-    perform_at = self.end_time #+ 5.minutes
+    perform_at = self.end_time + 5.minutes
     jid = UploadWorker.perform_at(perform_at, self.id, 1)
     Capture.where(id: self.id).update_all({ job_id: jid })
   end

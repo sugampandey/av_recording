@@ -53,14 +53,21 @@ class Capture < ActiveRecord::Base
   end
   
   def output_filename
-    date_part = ['Video', 
-      self.start_time.strftime("%m%d%Y")
-    ].join('_')
-    
-    time_part = [ self.start_time.strftime("%H%M"),
-      self.end_time.strftime("%H%M"),
-      self.id
-    ].join('-')
+
+    begin
+      old_time_zone = Time.zone
+      Time.zone = self.time_zone
+      date_part = ['Video', 
+        self.start_time.strftime("%m%d%Y")
+      ].join('_')
+      
+      time_part = [ self.start_time.strftime("%H%M"),
+        self.end_time.strftime("%H%M"),
+        self.id
+      ].join('-')    
+    ensure
+      Time.zone = old_time_zone
+    end
     
     camera_part = self.camera.name.parameterize
     
@@ -77,7 +84,12 @@ class Capture < ActiveRecord::Base
   end
   
   def expiring_url
-    key = File.basename(self.output_file_path)
+    key = self.s3_object_key
+    if key.nil?
+      key = File.basename(self.output_file_path)
+      self.s3_object_key = key
+      self.save!
+    end
     if Capture.s3.buckets[S3_BUCKET_NAME].objects[key].exists?
       Capture.s3.buckets[S3_BUCKET_NAME].objects[key].url_for(:get, :expires_in => 86400)
     else
@@ -151,11 +163,14 @@ class Capture < ActiveRecord::Base
     ensure
       Time.zone = old_time_zone
     end
+    
   end
   
   def process_upload
     key = File.basename(self.output_file_path)
-    Capture.s3.buckets[S3_BUCKET_NAME].objects[key].write(:file => self.output_file_path)
+    Capture.s3.buckets[S3_BUCKET_NAME].objects[key].write(:file => self.output_file_path,:content_type => "video/x-msvideo",
+      :acl => :private)
+    self.s3_object_key = key
     self.complete!
   end
   

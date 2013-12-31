@@ -33,18 +33,18 @@ class Capture < ActiveRecord::Base
   after_update :update_capture_worker
   after_destroy :remove_capture_worker
 
-  def self.s3
-    AWS::S3.new(:access_key_id => S3_ACCESS_KEY, :secret_access_key => S3_SECRET_KEY)
-  end 
+#  def self.s3
+#    AWS::S3.new(:access_key_id => S3_ACCESS_KEY, :secret_access_key => S3_SECRET_KEY)
+#  end 
    
   def self.cleanup
     t = Time.zone.now - 7.days
     Capture.destroy_all("end_time < '#{t}'")
-    Capture.s3.buckets[S3_BUCKET_NAME].objects.each do |s3obj|
-      if s3obj.last_modified < t
-        s3obj.delete
-      end
-    end
+#    Capture.s3.buckets[S3_BUCKET_NAME].objects.each do |s3obj|
+#      if s3obj.last_modified < t
+#        s3obj.delete
+#      end
+#    end
   end
   
   def duration
@@ -80,25 +80,22 @@ class Capture < ActiveRecord::Base
   
   def output_file_path
     f = output_filename
-    if Rails.env.production?
-      "/mnt/videos/#{self.id}-#{f}.mp4"
-    else
-      "#{Rails.root}/tmp/cache/#{self.id}-#{f}.mp4"
-    end
+    "#{Rails.root}/public/system/#{self.id}-#{f}.mp4"
   end
   
   def expiring_url
-    key = self.s3_object_key
-    if key.nil?
-      key = File.basename(self.output_file_path)
-      self.s3_object_key = key
-      self.save!
-    end
-    if Capture.s3.buckets[S3_BUCKET_NAME].objects[key].exists?
-      Capture.s3.buckets[S3_BUCKET_NAME].objects[key].url_for(:get, :expires_in => 86400)
-    else
-      nil
-    end
+    output_file_path.gsub("#{Rails.root}/public",'')
+#    key = self.s3_object_key
+#    if key.nil?
+#      key = File.basename(self.output_file_path)
+#      self.s3_object_key = key
+#      self.save!
+#    end
+#    if Capture.s3.buckets[S3_BUCKET_NAME].objects[key].exists?
+#      Capture.s3.buckets[S3_BUCKET_NAME].objects[key].url_for(:get, :expires_in => 86400)
+#    else
+#      nil
+#    end
   end
   
   def remove_output_file
@@ -132,11 +129,11 @@ class Capture < ActiveRecord::Base
     Capture.where(id: self.id).update_all({ job_id: jid })
   end
   
-  def register_upload_worker
-    perform_at = self.end_time + 5.minutes
-    jid = UploadWorker.perform_at(perform_at, self.id, 1)
-    Capture.where(id: self.id).update_all({ job_id: jid })
-  end
+#  def register_upload_worker
+#    perform_at = self.end_time + 5.minutes
+#    jid = UploadWorker.perform_at(perform_at, self.id, 1)
+#    Capture.where(id: self.id).update_all({ job_id: jid })
+#  end
   
   def capture_command
     url = self.camera.stream_uri
@@ -148,7 +145,7 @@ class Capture < ActiveRecord::Base
     self.pid = spawn(self.capture_command, :out=>"/dev/null", :err => "#{Rails.root}/log/recording.log")
 
     if self.save! 
-      register_upload_worker
+      #register_upload_worker
       register_recurrent_worker
     end
   end
@@ -171,13 +168,13 @@ class Capture < ActiveRecord::Base
     
   end
   
-  def process_upload
-    key = File.basename(self.output_file_path)
-    Capture.s3.buckets[S3_BUCKET_NAME].objects[key].write(:file => self.output_file_path,:content_type => "video/x-msvideo",
-      :acl => :private)
-    self.s3_object_key = key
-    self.complete!
-  end
+#  def process_upload
+#    key = File.basename(self.output_file_path)
+#    Capture.s3.buckets[S3_BUCKET_NAME].objects[key].write(:file => self.output_file_path,:content_type => "video/x-msvideo",
+#      :acl => :private)
+#    self.s3_object_key = key
+#    self.complete!
+#  end
   
   def verify_worker_not_started
     if worker_started? and (self.start_time_changed? or self.end_time_changed?)

@@ -185,7 +185,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk
   browser-timezone-rails
-  capistrano
+  capistrano (~> 2.15.5)
   coffee-rails (~> 4.0.0)
   daemons
   foreman

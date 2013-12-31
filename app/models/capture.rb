@@ -53,7 +53,7 @@ class Capture < ActiveRecord::Base
   end
   
   def output_filename
-
+=begin
     begin
       old_time_zone = Time.zone
       Time.zone = self.time_zone
@@ -72,14 +72,18 @@ class Capture < ActiveRecord::Base
     camera_part = self.camera.name.parameterize
     
     "#{date_part}_#{time_part}_#{camera_part}"
+
+=end
+
+     ['Video', self.camera.name.parameterize].join("_")
   end
   
   def output_file_path
     f = output_filename
     if Rails.env.production?
-      "/mnt/videos/#{self.id}-#{f}.avi"
+      "/mnt/videos/#{self.id}-#{f}.mp4"
     else
-      "#{Rails.root}/tmp/cache/#{self.id}-#{f}.avi"
+      "#{Rails.root}/tmp/cache/#{self.id}-#{f}.mp4"
     end
   end
   
@@ -136,7 +140,8 @@ class Capture < ActiveRecord::Base
   
   def capture_command
     url = self.camera.stream_uri
-    "avconv -i '#{url}' -t #{self.duration} -acodec libmp3lame #{self.output_file_path}"
+    #"avconv -i '#{url}' -t #{self.duration} -acodec libmp3lame #{self.output_file_path}"
+    "avconv -i '#{url}' -t #{self.duration} -ar 22050 -ab 64k -strict experimental -acodec aac #{self.output_file_path}"
   end
   
   def process_capture

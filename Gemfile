@@ -35,7 +35,7 @@ group :development do
 end
 
 # Use Capistrano for deployment
-gem 'capistrano', group: :development
+gem 'capistrano', '~> 2.15.5', group: :development
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]

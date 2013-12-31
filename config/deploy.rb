@@ -4,6 +4,7 @@ set :branch, fetch(:branch, "master")
 set :scm, :git
 server '50.197.140.116', :app, :web, :db, :primary => true
 require 'bundler/capistrano'
+require "sidekiq/capistrano"
 set :rails_env, 'production'
 set :deploy_to, "/home/sugam/Projects/#{application}"
 set :user, "sugam"

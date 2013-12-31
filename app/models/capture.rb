@@ -129,11 +129,11 @@ class Capture < ActiveRecord::Base
     Capture.where(id: self.id).update_all({ job_id: jid })
   end
   
-#  def register_upload_worker
-#    perform_at = self.end_time + 5.minutes
-#    jid = UploadWorker.perform_at(perform_at, self.id, 1)
-#    Capture.where(id: self.id).update_all({ job_id: jid })
-#  end
+  def register_upload_worker
+    perform_at = self.end_time + 5.minutes
+    jid = UploadWorker.perform_at(perform_at, self.id, 1)
+    Capture.where(id: self.id).update_all({ job_id: jid })
+  end
   
   def capture_command
     url = self.camera.stream_uri
@@ -145,7 +145,7 @@ class Capture < ActiveRecord::Base
     self.pid = spawn(self.capture_command, :out=>"/dev/null", :err => "#{Rails.root}/log/recording.log")
 
     if self.save! 
-      #register_upload_worker
+      register_upload_worker
       register_recurrent_worker
     end
   end
@@ -168,13 +168,13 @@ class Capture < ActiveRecord::Base
     
   end
   
-#  def process_upload
+  def process_upload
 #    key = File.basename(self.output_file_path)
 #    Capture.s3.buckets[S3_BUCKET_NAME].objects[key].write(:file => self.output_file_path,:content_type => "video/x-msvideo",
-#      :acl => :private)
+      :acl => :private)
 #    self.s3_object_key = key
-#    self.complete!
-#  end
+    self.complete!
+  end
   
   def verify_worker_not_started
     if worker_started? and (self.start_time_changed? or self.end_time_changed?)

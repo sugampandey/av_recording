@@ -170,8 +170,7 @@ class Capture < ActiveRecord::Base
   
   def process_upload
 #    key = File.basename(self.output_file_path)
-#    Capture.s3.buckets[S3_BUCKET_NAME].objects[key].write(:file => self.output_file_path,:content_type => "video/x-msvideo",
-      :acl => :private)
+#    Capture.s3.buckets[S3_BUCKET_NAME].objects[key].write(:file => self.output_file_path,:content_type => "video/x-msvideo", :acl => :private)
 #    self.s3_object_key = key
     self.complete!
   end

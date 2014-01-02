@@ -33,18 +33,18 @@ class Capture < ActiveRecord::Base
   after_update :update_capture_worker
   after_destroy :remove_capture_worker
 
-  def self.s3
-    AWS::S3.new(:access_key_id => S3_ACCESS_KEY, :secret_access_key => S3_SECRET_KEY)
-  end 
+#  def self.s3
+#    AWS::S3.new(:access_key_id => S3_ACCESS_KEY, :secret_access_key => S3_SECRET_KEY)
+#  end 
    
   def self.cleanup
-    t = Time.zone.now - 7.days
+    t = Time.zone.now - 30.days
     Capture.destroy_all("end_time < '#{t}'")
-    Capture.s3.buckets[S3_BUCKET_NAME].objects.each do |s3obj|
-      if s3obj.last_modified < t
-        s3obj.delete
-      end
-    end
+#    Capture.s3.buckets[S3_BUCKET_NAME].objects.each do |s3obj|
+#      if s3obj.last_modified < t
+#        s3obj.delete
+#      end
+#    end
   end
   
   def duration
@@ -53,7 +53,7 @@ class Capture < ActiveRecord::Base
   end
   
   def output_filename
-
+=begin
     begin
       old_time_zone = Time.zone
       Time.zone = self.time_zone
@@ -72,29 +72,30 @@ class Capture < ActiveRecord::Base
     camera_part = self.camera.name.parameterize
     
     "#{date_part}_#{time_part}_#{camera_part}"
+
+=end
+
+     ['Video', self.camera.name.parameterize].join("_")
   end
   
   def output_file_path
     f = output_filename
-    if Rails.env.production?
-      "/mnt/videos/#{self.id}-#{f}.avi"
-    else
-      "#{Rails.root}/tmp/cache/#{self.id}-#{f}.avi"
-    end
+    "#{Rails.root}/public/system/#{self.id}-#{f}.avi"
   end
   
   def expiring_url
-    key = self.s3_object_key
-    if key.nil?
-      key = File.basename(self.output_file_path)
-      self.s3_object_key = key
-      self.save!
-    end
-    if Capture.s3.buckets[S3_BUCKET_NAME].objects[key].exists?
-      Capture.s3.buckets[S3_BUCKET_NAME].objects[key].url_for(:get, :expires_in => 86400)
-    else
-      nil
-    end
+    output_file_path.gsub("#{Rails.root}/public",'')
+#    key = self.s3_object_key
+#    if key.nil?
+#      key = File.basename(self.output_file_path)
+#      self.s3_object_key = key
+#      self.save!
+#    end
+#    if Capture.s3.buckets[S3_BUCKET_NAME].objects[key].exists?
+#      Capture.s3.buckets[S3_BUCKET_NAME].objects[key].url_for(:get, :expires_in => 86400)
+#    else
+#      nil
+#    end
   end
   
   def remove_output_file
@@ -136,6 +137,7 @@ class Capture < ActiveRecord::Base
   
   def capture_command
     url = self.camera.stream_uri
+    #"avconv -i '#{url}' -t #{self.duration} -ar 22050 -ab 64k -strict experimental -acodec aac #{self.output_file_path}"
     "avconv -i '#{url}' -t #{self.duration} -acodec libmp3lame #{self.output_file_path}"
   end
   
@@ -167,10 +169,9 @@ class Capture < ActiveRecord::Base
   end
   
   def process_upload
-    key = File.basename(self.output_file_path)
-    Capture.s3.buckets[S3_BUCKET_NAME].objects[key].write(:file => self.output_file_path,:content_type => "video/x-msvideo",
-      :acl => :private)
-    self.s3_object_key = key
+#    key = File.basename(self.output_file_path)
+#    Capture.s3.buckets[S3_BUCKET_NAME].objects[key].write(:file => self.output_file_path,:content_type => "video/x-msvideo", :acl => :private)
+#    self.s3_object_key = key
     self.complete!
   end
   

@@ -38,7 +38,7 @@ class Capture < ActiveRecord::Base
 #  end 
    
   def self.cleanup
-    t = Time.zone.now - 7.days
+    t = Time.zone.now - 30.days
     Capture.destroy_all("end_time < '#{t}'")
 #    Capture.s3.buckets[S3_BUCKET_NAME].objects.each do |s3obj|
 #      if s3obj.last_modified < t

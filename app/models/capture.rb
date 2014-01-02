@@ -80,7 +80,7 @@ class Capture < ActiveRecord::Base
   
   def output_file_path
     f = output_filename
-    "#{Rails.root}/public/system/#{self.id}-#{f}.mp4"
+    "#{Rails.root}/public/system/#{self.id}-#{f}.avi"
   end
   
   def expiring_url
@@ -137,8 +137,8 @@ class Capture < ActiveRecord::Base
   
   def capture_command
     url = self.camera.stream_uri
-    #"avconv -i '#{url}' -t #{self.duration} -acodec libmp3lame #{self.output_file_path}"
-    "avconv -i '#{url}' -t #{self.duration} -ar 22050 -ab 64k -strict experimental -acodec aac #{self.output_file_path}"
+    #"avconv -i '#{url}' -t #{self.duration} -ar 22050 -ab 64k -strict experimental -acodec aac #{self.output_file_path}"
+    "avconv -i '#{url}' -t #{self.duration} -acodec libmp3lame #{self.output_file_path}"
   end
   
   def process_capture

@@ -7,7 +7,10 @@ class CapturesController < ApplicationController
   # GET /captures
   # GET /captures.json
   def index
-    @captures = Capture.all
+    respond_to do |format|
+      format.html {  }
+      format.json { render json: CaptureDatatable.new(view_context) }
+    end
   end
 
   # GET /captures/1

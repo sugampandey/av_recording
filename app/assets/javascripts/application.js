@@ -14,4 +14,18 @@
 //= require jquery_ujs
 //= require jquery.ui.all
 //= require browser_timezone_rails/application.js
-//= require_tree .
+//= require bootstrap
+//= require jquery-ui-timepicker-addon.js
+//= require twitter/bootstrap/rails/confirm
+//= require dataTables/jquery.dataTables
+//= require dataTables/jquery.dataTables.bootstrap3
+//= require_self
+
+$.fn.twitter_bootstrap_confirmbox.defaults = {
+    fade: true,
+    title: "AV Recording",
+    cancel: "Cancel",
+    cancel_class: "btn btn-sm cancel",
+    proceed: "Proceed",
+    proceed_class: "btn btn-primary btn-sm"
+};

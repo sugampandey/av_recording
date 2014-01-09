@@ -1,42 +1,56 @@
 <%= form_for @capture, :html => { :class => 'form-horizontal pure-form pure-form-aligned' } do |f| %>
-
   <% if @capture.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@capture.errors.count, "error") %> prohibited this capture from being saved:</h2>
+  <div class="row">
+    <div class="col-md-6">
+      <div id="error_explanation" class="alert alert-warning">
+        <h2><%= pluralize(@capture.errors.count, "error") %> prohibited this capture from being saved:</h2>
 
-      <ul>
-      <% @capture.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+        <ul>
+        <% @capture.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>  
     </div>
+  </div>
   <% end %>
 
-  <div class="pure-control-group">
-    <%= f.label :camera_id, :class => 'control-label' %>
-      <%= f.select :camera_id, options_for_select(Camera.all.collect{|c|[c.name, c.id]}, f.object.camera_id), :class => 'select_field' %>
+<div class="row">
+  <div class="col-md-6">
+    <div class="" style="padding:20px;">
+      <div class="form-group select">
+        <span class="form-group-addon"><%= f.label :camera_id, :class => 'control-label' %></span>
+        <%= f.select :camera_id, options_for_select(Camera.all.collect{|c|[c.name, c.id]}, f.object.camera_id), {}, { :class => 'select  form-control' } %>
+      </div>
+      <div class="form-group select ">
+        <span class="form-group-addon"><%= f.label :time_zone, :class => 'control-label' %></span>
+        <%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, { :default => Time.zone.name }, { :class => 'select form-control' }  %>
+      </div>
+      <div class="form-group">
+        <span class="form-group-addon"><%= f.label :start_time, :class => 'control-label' %></span>
+          <%= f.text_field :start_time, :value => f.object.start_time.strftime('%Y-%m-%d %H:%M'), :class => 'form-control time_picker' %>
+      </div>
+      <div class="form-group">
+        <span class="form-group-addon"><%= f.label :end_time, :class => 'control-label' %></span>
+        <%= f.text_field :end_time, :value => f.object.end_time.strftime('%Y-%m-%d %H:%M'), :class => 'form-control time_picker' %>
+      </div>
+      <div class="form-group">
+        <span class="form-group-addon"><%= f.label :recurrent, :class => 'control-label' %></span>
+        <%= f.check_box :recurrent %>&nbsp;&nbsp;<span style="font-size: 0.7em"><i>by checking this, recording will recurrent in the next week</i></span>
+      </div>
+    </div>
   </div>
-  <div class="pure-control-group">
-    <%= f.label :time_zone, :class => 'control-label' %>
-    <%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, :class => 'select_field', :default => Time.zone.name  %>
+
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="pure-controls">
+      <%= f.submit nil, :class => 'btn btn-primary' %>
+      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                  captures_path, :class => 'btn btn-warning' %>
+    </div>
   </div>
-  <div class="pure-control-group">
-    <%= f.label :start_time, :class => 'control-label' %>
-      <%= f.text_field :start_time, :value => f.object.start_time.strftime('%Y-%m-%d %H:%M'), :class => 'text_field time_picker' %>
-  </div>
-  <div class="pure-control-group">
-    <%= f.label :end_time, :class => 'control-label' %>
-    <%= f.text_field :end_time, :value => f.object.end_time.strftime('%Y-%m-%d %H:%M'), :class => 'text_field time_picker' %>
-  </div>
-  <div class="pure-control-group">
-    <%= f.label :recurrent, :class => 'control-label' %>
-    <%= f.check_box :recurrent %>&nbsp;&nbsp;<span style="font-size: 0.7em"><i>by checking this, recording will recurrent in the next week</i></span>
-  </div>
-  <div class="pure-controls">
-    <%= f.submit nil, :class => 'btn btn-primary pure-button pure-button-primary' %>
-    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
-                captures_path, :class => 'btn' %>
-  </div>
+</div>
 <% end %>
 
 <% content_for :js do %>

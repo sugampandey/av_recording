@@ -51,3 +51,8 @@ gem "sidekiq"
 gem 'sinatra', '>= 1.3.0', :require => nil
 gem 'foreman', :require => false
 gem 'unicorn'
+gem 'bootstrap-sass', '~> 3.0.3.0'
+gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
+gem 'font-awesome-rails'
+gem 'kaminari'
+gem 'twitter-bootstrap-rails-confirm', github: 'bluerail/twitter-bootstrap-rails-confirm', branch: 'bootstrap3'

@@ -1,28 +1,55 @@
 <%= form_for @camera, :html => { :class => 'form-horizontal pure-form pure-form-aligned' } do |f| %>
-  <div class="pure-control-group">
-    <%= f.label :name, :class => 'control-label' %>
-      <%= f.text_field :name, :class => 'text_field' %>
-  </div>
-  <div class="pure-control-group">
-    <%= f.label :host_uri, :class => 'control-label' %>
-      <%= f.text_field :host_uri, :class => 'text_field' %>
-  </div>
-  <div class="pure-control-group">
-    <%= f.label :capture_path, :class => 'control-label' %>
-      <%= f.text_field :capture_path, :class => 'text_field' %>
-  </div>
-  <div class="pure-control-group">
-    <%= f.label :username, :class => 'control-label' %>
-      <%= f.text_field :username, :class => 'text_field' %>
-  </div>
-  <div class="pure-control-group">
-    <%= f.label :password, :class => 'control-label' %>
-      <%= f.text_field :password, :class => 'text_field' %>
-  </div>
+  <% if @camera.errors.any? %>
+  <div class="row">
+    <div class="col-md-6">
+      <div id="error_explanation" class="alert alert-warning">
+        <h2><%= pluralize(@camera.errors.count, "error") %> prohibited this camera from being saved:</h2>
 
-  <div class="pure-controls">
-    <%= f.submit nil, :class => 'btn btn-primary pure-button pure-button-primary' %>
-    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
-                cameras_path, :class => 'btn' %>
+        <ul>
+        <% @camera.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>  
+    </div>
   </div>
+  <% end %>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="" style="padding:20px;">
+      <div class="form-group">
+        <%= f.label :name, :class => 'control-label' %>
+          <%= f.text_field :name, :class => 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :host_uri, :class => 'control-label' %>
+          <%= f.text_field :host_uri, :class => 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :capture_path, :class => 'control-label' %>
+          <%= f.text_field :capture_path, :class => 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :username, :class => 'control-label' %>
+          <%= f.text_field :username, :class => 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :password, :class => 'control-label' %>
+          <%= f.text_field :password, :class => 'form-control' %>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="" style="padding:20px;">
+      <div class="pure-controls">
+        <%= f.submit nil, :class => 'btn btn-primary' %>
+        <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                    cameras_path, :class => 'btn btn-warning' %>
+      </div>
+    </div>
+  </div>
+</div>
 <% end %>

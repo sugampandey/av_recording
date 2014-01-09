@@ -1,0 +1,29 @@
+@import "bootstrap/variables";
+
+$font-size-base:          12px;
+
+$border-radius-base:             0px;
+$border-radius-large:            0px;
+$border-radius-small:            0px;
+
+$table-cell-padding:                 3px;
+$table-condensed-cell-padding:       3px;
+
+@import "bootstrap";
+
+h1 { font-size: $font-size-base * 1.75; } // ~38px
+h2 { font-size: $font-size-base * 1.25; } // ~32px
+h3 { font-size: $font-size-base * 1; } // ~24px
+h4 { font-size: $font-size-base * 1; } // ~18px
+h5 { font-size: $font-size-base; }
+h6 { font-size: $font-size-base * 0.85; } // ~12px
+
+.ui-widget{ 
+  font-size: 0.9em; 
+}
+.ui-widget {
+  font-family: "proxima-nova", sans-serif;
+}
+.page-header {
+  margin: 0;
+}

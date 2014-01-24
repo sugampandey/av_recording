@@ -18,11 +18,17 @@
   <dd><%= @capture.recurrent %></dd>
 </dl>
 
+
+  <video id="video1" width="420">
+    <source src="/14-Video_santa-clara-primary.avi" type="video/avi">
+    Your browser does not support HTML5 video.
+  </video>
+
 <div class="form-actions">
   <%= link_to t('.back', :default => t("helpers.links.back")),
-              captures_path, :class => 'btn'  %>
+              captures_path, :class => 'btn btn-default'  %>
   <%= link_to t('.edit', :default => t("helpers.links.edit")),
-              edit_capture_path(@capture), :class => 'btn' %>
+              edit_capture_path(@capture), :class => 'btn btn-info' %>
   <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
               capture_path(@capture),
               :method => 'delete',

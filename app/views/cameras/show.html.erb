@@ -18,9 +18,9 @@
 
 <div class="form-actions">
   <%= link_to t('.back', :default => t("helpers.links.back")),
-              cameras_path, :class => 'btn'  %>
+              cameras_path, :class => 'btn btn-default'  %>
   <%= link_to t('.edit', :default => t("helpers.links.edit")),
-              edit_camera_path(@camera), :class => 'btn' %>
+              edit_camera_path(@camera), :class => 'btn btn-info' %>
   <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
               camera_path(@camera),
               :method => 'delete',

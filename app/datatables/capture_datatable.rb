@@ -19,6 +19,11 @@ private
 
   def data
     resources.map do |capture|
+      if capture.completed?
+        download_link = link_to('Download',capture.expiring_url, class: 'btn btn-xs btn-success', target: '_blank')
+      else
+        download_link = ""
+      end
       [
         capture.id,
         capture.time_zone,
@@ -26,7 +31,7 @@ private
         capture.end_time.strftime('%D %T'), 
         capture.camera.name,
         capture.state,
-        link_to('Download',capture.expiring_url, class: 'btn btn-xs btn-success', target: '_blank'),
+        download_link,
         [ link_to('Edit', edit_capture_path(capture), class: 'btn btn-xs btn-info'),
           link_to('Destroy', capture_path(capture), class: 'btn btn-xs btn-danger', data: { method: :delete, confirm: 'Are you sure?' }) 
         ].join(' ')

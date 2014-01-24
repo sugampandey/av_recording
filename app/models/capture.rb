@@ -161,6 +161,7 @@ class Capture < ActiveRecord::Base
       new_capture.end_time = self.end_time + 1.week
       new_capture.camera = self.camera
       new_capture.time_zone = self.time_zone
+      new_capture.recurrent = self.recurrent
       new_capture.save!
     ensure
       Time.zone = old_time_zone

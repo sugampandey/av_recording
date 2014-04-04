@@ -32,7 +32,7 @@ class Capture < ActiveRecord::Base
   after_create :register_capture_worker
   after_update :update_capture_worker
   after_destroy :remove_capture_worker
-  after_destroy :remove_output_file
+  #after_destroy :remove_output_file
 
 #  def self.s3
 #    AWS::S3.new(:access_key_id => S3_ACCESS_KEY, :secret_access_key => S3_SECRET_KEY)
@@ -40,7 +40,10 @@ class Capture < ActiveRecord::Base
    
   def self.cleanup
     t = Time.zone.now - 60.days
-    Capture.destroy_all("end_time < '#{t}'")
+    Capture.where("end_time < '#{t}'").each do |v|
+      v.remove_output_file
+      v.destroy!
+    end
 #    Capture.s3.buckets[S3_BUCKET_NAME].objects.each do |s3obj|
 #      if s3obj.last_modified < t
 #        s3obj.delete

@@ -32,7 +32,7 @@ class Capture < ActiveRecord::Base
   after_create :register_capture_worker
   after_update :update_capture_worker
   after_destroy :remove_capture_worker
-  #after_destroy :remove_output_file
+  after_destroy :remove_output_file
 
 #  def self.s3
 #    AWS::S3.new(:access_key_id => S3_ACCESS_KEY, :secret_access_key => S3_SECRET_KEY)

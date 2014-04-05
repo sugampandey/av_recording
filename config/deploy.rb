@@ -4,7 +4,8 @@ set :repository,  "git@github.com:sugampandey/av_recording.git"
 set :branch, fetch(:branch, "master")
 set :scm, :git
 
-server '50.197.140.116', :app, :web, :db, :primary => true
+#server '50.197.140.116', :app, :web, :db, :primary => true
+server '162.231.97.141', :app, :web, :db, :primary => true
 
 set :rails_env, 'production'
 set :deploy_to, "/home/sugam/Projects/#{application}"

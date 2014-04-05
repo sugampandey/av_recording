@@ -16,7 +16,7 @@
 //= require browser_timezone_rails/application.js
 //= require bootstrap
 //= require jquery-ui-timepicker-addon.js
-//= require twitter/bootstrap/rails/confirm
+//= require confirm
 //= require dataTables/jquery.dataTables
 //= require dataTables/jquery.dataTables.bootstrap3
 //= require_self

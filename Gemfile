@@ -37,6 +37,7 @@ end
 # Use Capistrano for deployment
 gem 'capistrano', '~> 2.15.5', group: :development
 gem 'capistrano-nginx-unicorn', require: false, group: :development
+gem 'capistrano-sidekiq'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 

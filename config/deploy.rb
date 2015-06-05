@@ -20,7 +20,7 @@ set :keep_releases, 3
 
 require 'bundler/capistrano'
 require 'capistrano-nginx-unicorn'
-require "sidekiq/capistrano"
+require "capistrano/sidekiq"
 
 before "bundle:install", "config:symlink_database_yml"
 after "deploy:restart", "deploy:cleanup"

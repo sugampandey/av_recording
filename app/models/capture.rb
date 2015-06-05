@@ -39,7 +39,7 @@ class Capture < ActiveRecord::Base
 #  end 
    
   def self.cleanup
-    t = Time.zone.now - 60.days
+    t = Time.zone.now - 15.days
     Capture.where("end_time < '#{t}'").each do |v|
       v.remove_output_file
       v.destroy!
